@@ -1,3 +1,7 @@
+const Huffman = require('./huffman');
+const path = require('path');
+const fs = require('fs'); // Importar el módulo 'fs'
+
 class Database {
     constructor() {
         this.data = [];
@@ -54,13 +58,9 @@ class Database {
     displayByName(nameKey) {
         const person = this.data.find(p => p.key === nameKey);
         if (person) {
-            console.log(`Nombre: ${person.name}`);
-            console.log(`DPI: ${person.dpi}`);
-            console.log(`Fecha de nacimiento: ${person.dateBirth}`);
-            console.log(`Dirección: ${person.address}`);
+
             Object.keys(person.companies).forEach(company => {
-                console.log(`Empresa: ${company}`);
-                console.log(`Función: ${person.companies[company]}`);
+
             });
         } else {
             console.log(`No se encontró a la persona con nombre clave: ${nameKey}`);
@@ -96,23 +96,32 @@ class Database {
         while (true) {
             const filePath = path.join(__dirname, `inputs/cartas/REC-${person.dpi}-${i}.txt`);
             if (fs.existsSync(filePath)) {
-
+                console.log("ESTE ES EL PATH DEL ARCHIVO ======");
+                console.log(filePath);
                 const content = fs.readFileSync(filePath, 'utf8');
                 const normalizedContent = content.replace(/\r\n/g, '\n');
+                console.log(normalizedContent);
                 const encoded = this.recommendationHuffman.encode(normalizedContent);
                 const decoded = this.recommendationHuffman.decode(encoded);
+                console.log(person);
                 person.recommendations.push(encoded);
                 person.recommendationsDecoded.push(decoded);
+
                 i++;
             } else {
                 break;
             }
         }
+        console.log(person);
     }
     loadConversations(person) {
+
         let i = 1;
         while (true) {
+
             const filePath = path.join(__dirname, `inputs/conversaciones/CONV-${person.dpi}-${i}.txt`);
+            console.log("RUTAS DE CONVERSACIONES =======");
+            console.log(filePath);
             if (fs.existsSync(filePath)) {
                 const content = fs.readFileSync(filePath, 'utf8');
                 const encryptedContent = person.encryptConversation(content);

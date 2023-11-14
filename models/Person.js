@@ -1,3 +1,9 @@
+
+const crypto = require('crypto');
+const ENCRYPTION_KEY2 = crypto.randomBytes(32).toString('hex');
+const ENCRYPTION_KEY = crypto.randomBytes(32).toString('hex');
+const IV_LENGTH = 16;
+
 class Person {
     constructor(name, dpi, dateBirth, address, companies = {}) {
         this.name = name;
@@ -23,12 +29,9 @@ class Person {
         let parts = encryptedData.split(':');
         let iv = Buffer.from(parts.shift(), 'hex');
         let encryptedText = Buffer.from(parts.join(':'), 'hex');
-        let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY2, 'hex'), iv);
-        console.log(decipher);
+        let decipher = crypto.createDecipheriv('aes-256-cbc', Buffer.from(ENCRYPTION_KEY, 'hex'), iv);
         let decrypted = decipher.update(encryptedText);
-        console.log(decrypted);
         decrypted = Buffer.concat([decrypted, decipher.final()]);
-        console.log(decrypted);
         return decrypted.toString();
     }
 
